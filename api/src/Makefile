@@ -12,8 +12,20 @@ SRCS := \
 	mvnc_api.c \
 	fp16.c
 
+# Determine platform
+UNAME := $(shell uname -s)
+ifeq ($(UNAME), Linux)
+LINUX := 1
+else ifeq ($(UNAME), Darwin)
+OSX := 1
+endif
 
-MV_COMMON_BASE=$(realpath ./common)
+ifeq ($(LINUX),1)
+	MV_COMMON_BASE := $(shell realpath ./common)
+else
+	MV_COMMON_BASE := $(shell grealpath ./common)
+endif
+
 XLINK_BASE=$(MV_COMMON_BASE)/components/XLink
 XLINKCONSOLE_BASE=$(MV_COMMON_BASE)/components/XLinkConsole
 
@@ -44,6 +56,7 @@ endif
 INCLUDES := \
 	-I. \
 	-I../include \
+	-I$(SYSROOT)/usr/local/include/libusb-1.0 \
 	-I$(SYSROOT)/usr/include/libusb-1.0 \
 
 CFLAGS += -O2 -Wall -pthread -fPIC -MMD -MP
@@ -73,11 +86,13 @@ basicinstall: $(OBJDIR)/$(OUT)
 	cp $(OBJDIR)/$(OUT) $(INSTALLDIR)/lib/
 	ln -fs libmvnc.so.0 $(INSTALLDIR)/lib/libmvnc.so
 	cp ../include/mvnc.h $(INSTALLDIR)/include/mvnc2
-	ln -fs $(INSTALLDIR)/include/mvnc2/mvnc.h $(INSTALLDIR)/include/mvnc.h 
+	ln -fs $(INSTALLDIR)/include/mvnc2/mvnc.h $(INSTALLDIR)/include/mvnc.h
 	mkdir -p $(INSTALLDIR)/lib/mvnc
 	cp mvnc/MvNCAPI-*.mvcmd $(INSTALLDIR)/lib/mvnc/
+ifeq ($(LINUX), 1)
 	mkdir -p ${DESTDIR}/etc/udev/rules.d/
 	cp 97-usbboot.rules ${DESTDIR}/etc/udev/rules.d/
+endif
 
 pythoninstall:
 	mkdir -p ${DESTDIR}$(PYTHON3DIST)
@@ -86,9 +101,11 @@ pythoninstall:
 	cp -r ../python/mvnc ${DESTDIR}$(PYTHON2DIST)/
 
 postinstall:
+ifeq ($(LINUX), 1)
 	udevadm control --reload-rules
 	udevadm trigger
 	ldconfig
+endif
 
 install: basicinstall pythoninstall postinstall
 
@@ -101,7 +118,9 @@ uninstall:
 #	rm -rf $(INSTALLDIR)/lib/mvnc
 	rm -rf ${DESTDIR}$(PYTHON3DIST)/mvnc
 	rm -rf ${DESTDIR}$(PYTHON2DIST)/mvnc
+ifeq ($(LINUX), 1)
 	rm -f ${DESTDIR}/etc/udev/rules.d/97-usbboot.rules
+endif
 
 clean:
 	rm -f $(OUT)
