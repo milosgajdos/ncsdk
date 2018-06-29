@@ -4,15 +4,41 @@ This Intel® Movidius™ Neural Compute software developer kit (NCSDK) is provid
 # Neural Compute SDK2
 ## [NCSDK v2](https://github.com/movidius/ncsdk/releases/latest) is now available.
 
-**How to build API library**
+**How to build API library on macOS**
+
+## Preqeuisities
+
+```shell
+$ brew install libusb grealpath wget opencv
+```
+
+## Install
 
 ```shell
 $ cd api/src && sudo make basicinstall pythoninstall
 ```
 
-Test everything works:
+## Test
+
 ```
 $ cd ../../examples/apps/hello_ncs_cpp/ && make run
+
+making hello_ncs_cpp
+g++ cpp/hello_ncs.cpp -o cpp/hello_ncs_cpp -lmvnc
+Created cpp/hello_ncs_cpp executable
+
+making run
+cd cpp; ./hello_ncs_cpp; cd ..
+/Users/milosgajdos/Code/ncsdk/examples/apps/hello_ncs_cpp/cpp
+Hello NCS! Device opened normally.
+Goodbye NCS!  Device Closed normally.
+NCS device working.
+```
+
+## Uninstall
+
+```shell
+$ cd api/src && make uninstall
 ```
 
 -------
