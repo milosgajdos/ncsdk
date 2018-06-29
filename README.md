@@ -2,10 +2,49 @@
 This Intel® Movidius™ Neural Compute software developer kit (NCSDK) is provided for users of the [Intel® Movidius™ Neural Compute Stick](https://developer.movidius.com/) (Intel® Movidius™ NCS). It includes software tools, an API, and examples, so developers can create software that takes advantage of the accelerated neural network capability provided by the Intel Movidius NCS hardware.
 
 # Neural Compute SDK2
-## The [NCSDK v2.04](https://github.com/movidius/ncsdk/releases/tag/v2.04.00.06) release is now available. 
+## [NCSDK v2](https://github.com/movidius/ncsdk/releases/latest) is now available.
+
+**How to build API library on macOS**
+
+## Preqeuisities
+
+```shell
+$ brew install libusb grealpath pkg-config wget
+```
+
+## Install
+
+**Unless you know what you are doing, avoid running pythoninstall target as Intel prpbably JUST discovered Python and install all pip packages to your PYTHON root enviornment so yeah, great job adding the virtualenv support only for V2**
+
+```shell
+$ cd api/src && sudo make basicinstall
+```
+
+## Test
+
+```
+$ cd ../../examples/apps/hello_ncs_cpp/ && make run
+
+making hello_ncs_cpp
+g++ cpp/hello_ncs.cpp -o cpp/hello_ncs_cpp -lmvnc
+Created cpp/hello_ncs_cpp executable
+
+making run
+cd cpp; ./hello_ncs_cpp; cd ..
+/Users/milosgajdos/Code/ncsdk/examples/apps/hello_ncs_cpp/cpp
+Hello NCS! Device opened normally.
+Goodbye NCS!  Device Closed normally.
+NCS device working.
+```
+
+## Uninstall
+
+```shell
+$ cd api/src && make uninstall
+```
 
 -------
-All documentation in the docs directory is now in HTML format which is **best viewed from the documentation site: https://movidius.github.io/ncsdk/** 
+All documentation in the docs directory is now in HTML format which is **best viewed from the documentation site: https://movidius.github.io/ncsdk/**
 -------
 -------
 With this release the existing NCAPI v1 has been rearchitected into NCAPI v2 which will pave the way for future enhancements and capabilities, as well add some now!  While users are transitioning to this new NCAPI v2 the legacy NCSDK v1.x release will stay on the master branch and NCSDK2 will be on the [ncsdk2](https://github.com/movidius/ncsdk/tree/ncsdk2) branch.  At some point in the not too distant future, NCSDK2 will move to the master.
@@ -13,11 +52,11 @@ With this release the existing NCAPI v1 has been rearchitected into NCAPI v2 whi
 To help you get ready for NCSDK2 you can take a look at some of the [changes in NCAPI v2](https://movidius.github.io/ncsdk/ncapi/readme.html) as well as the [NCSDK2 Release Notes](https://movidius.github.io/ncsdk/release_notes.html).
 
 To install NCSDK 2.x you can use the following command to clone the ncsdk2 branch
-```bash 
+```bash
 git clone -b ncsdk2 https://github.com/movidius/ncsdk.git
 ```
 Or if you would rather install the legacy NCSDK 1.x you can use the following command to clone as has always been the case
-```bash 
+```bash
 git clone https://github.com/movidius/ncsdk.git
 ```
 
