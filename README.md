@@ -20,7 +20,9 @@ $ cd api/src && sudo make basicinstall pythoninstall
 
 ## Test
 
-```
+API V2 does seem to be broken on macOS, though as you can see below:
+
+```shell
 $ cd ../../examples/apps/hello_ncs_cpp/ && make run
 
 making hello_ncs_cpp
@@ -29,10 +31,19 @@ Created cpp/hello_ncs_cpp executable
 
 making run
 cd cpp; ./hello_ncs_cpp; cd ..
-/Users/milosgajdos/Code/ncsdk/examples/apps/hello_ncs_cpp/cpp
-Hello NCS! Device opened normally.
-Goodbye NCS!  Device Closed normally.
-NCS device working.
+
+Can't create semaphore
+Function not implemented
+Can't create semaphore
+Function not implemented
+E: [ 0] dispatcherAddEvent:533 can't wait semaphore
+W: [ 0] dispatcherAddEvent:545 No more semaphores. Increase XLink or OS resources
+E: [ 0] dispatcherAddEvent:533 can't wait semaphore
+W: [ 0] dispatcherAddEvent:545 No more semaphores. Increase XLink or OS resources
+E: [ 0] XLinkOpenStream:909 Max streamId reached deaddead!
+W: [ 0] ncDeviceOpen:558 can't open stream
+Error- ncDeviceOpen failed
+ncStatus value: -2_
 ```
 
 ## Uninstall
