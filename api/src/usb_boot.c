@@ -35,6 +35,11 @@
 #include "mvnc.h"
 #include "common.h"
 
+#ifdef __APPLE__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 #define DEFAULT_WRITE_TIMEOUT		2000
 #define DEFAULT_CONNECT_TIMEOUT		20	// in 100ms units
 #define DEFAULT_CHUNK_SZ			1024 * 1024
@@ -59,7 +64,17 @@ typedef struct timespec highres_time_t;
 
 static inline void highres_gettime(highres_time_t *ptr)
 {
-	clock_gettime(CLOCK_REALTIME, ptr);
+#ifdef __APPLE__ // OS X does not have clock_gettime, use clock_get_time
+        clock_serv_t cclock;
+        mach_timespec_t mts;
+        host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+        clock_get_time(cclock, &mts);
+        mach_port_deallocate(mach_task_self(), cclock);
+        ptr->tv_sec = mts.tv_sec;
+        ptr->tv_nsec = mts.tv_nsec;
+#else
+        clock_gettime(CLOCK_REALTIME, ptr);
+#endif
 }
 
 static inline double highres_elapsed_ms(highres_time_t *start, highres_time_t *end)

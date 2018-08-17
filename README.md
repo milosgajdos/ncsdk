@@ -12,7 +12,7 @@ Make sure you have the following packages installed:
 `opencv` version should be 3.4.2
 
 ```shell
-$ brew install opencv libusb grealpath pkg-config wget
+$ brew install coreutils opencv libusb pkg-config wget
 ```
 
 ## Install

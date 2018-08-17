@@ -32,6 +32,11 @@
 #include "usb_boot.h"
 #include "common.h"
 
+#ifdef __APPLE__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 // Graph file structure
 #define HEADER_LENGTH	264
 #define STAGE_LENGTH 	227
@@ -99,7 +104,17 @@ static double time_in_seconds()
 	static double s;
 	struct timespec ts;
 
-	clock_gettime(CLOCK_MONOTONIC, &ts);
+#ifdef __APPLE__ // OS X does not have clock_gettime, use clock_get_time
+        clock_serv_t cclock;
+        mach_timespec_t mts;
+        host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+        clock_get_time(cclock, &mts);
+        mach_port_deallocate(mach_task_self(), cclock);
+        ts.tv_sec = mts.tv_sec;
+        ts.tv_nsec = mts.tv_nsec;
+#else
+        clock_gettime(CLOCK_REALTIME, &ts);
+#endif
 	if (!s)
 		s = ts.tv_sec + ts.tv_nsec * 1e-9;
 	return ts.tv_sec + ts.tv_nsec * 1e-9 - s;
